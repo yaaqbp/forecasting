@@ -56,8 +56,8 @@ def train_ws_model(n_trials = 10):
     print('weekly sales model trained')
     joblib.dump(final_model, '../models/lgbm_weekly_sales.pkl')
     print('weekly sales model saved')
-"""
-def train_ts_model(n_trials = 10):
+
+def train_ts_model(n_trials = 100):
     df = pd.read_csv('../data/dummy_total_sales.csv')
     X_train, y_train = df[df.year_2012 == 0].drop('total_sales', axis = 1), df[df.year_2012 == 0][['total_sales']]
     X_test, y_test = df[df.year_2012 == 1].drop('total_sales', axis = 1), df[df.year_2012 == 1][['total_sales']]
@@ -96,10 +96,10 @@ def train_ts_model(n_trials = 10):
     print('total sales model trained')
     joblib.dump(final_model, '../models/lgbm_total_sales.pkl')
     print('total sales model saved')
-
+"""
 def train_markdown_models(n_trials = 10):
     df = pd.read_csv('../data/dummy_markdowns.csv')
-    for idx in range(1,6):   
+    for idx in range(1,6): 
         markdown = f'MarkDown{idx}'
         X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,:-5], df[[markdown]], test_size=0.2, random_state=seed)
         def objective(trial, X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test):
@@ -108,12 +108,6 @@ def train_markdown_models(n_trials = 10):
                 'metric': 'rmse', 
                 'random_state': seed,
                 'n_estimators': 20000,
-                'max_depth': 10,
-                'num_leaves': 40,   
-                'task': 'train',                                                                                                                      
-                'objective': 'regression_l1',  
-                'feature_fraction': 0.9,                                                                                                              
-                'bagging_fraction': 0.8,             
                 'reg_alpha': trial.suggest_loguniform('reg_alpha', 1e-3, 10.0),
                 'reg_lambda': trial.suggest_loguniform('reg_lambda', 1e-3, 10.0),
                 'colsample_bytree': trial.suggest_categorical('colsample_bytree', [0.3,0.4,0.5,0.6,0.7,0.8,0.9, 1.0]),
@@ -144,38 +138,9 @@ def train_markdown_models(n_trials = 10):
         print(f'markdown{idx} model trained')
         joblib.dump(final_model, f'../models/lgbm_markdown{idx}.pkl')
         print(f'markdown{idx} model saved')
+    """
 
-"""
-def train_ts_model():
-    df = pd.read_csv('../data/dummy_total_sales.csv')
-    print('total sales data loaded')
-    X_train, y_train = df[df.year_2012 == 0].drop('total_sales', axis = 1), df[df.year_2012 == 0][['total_sales']]
-    #X_test, y_test = df[df.year_2012 == 1].drop('total_sales', axis = 1), df[df.year_2012 == 1][['total_sales']]
-    iteration = 100000
-                                                                                                        
-    lgb_params = {                                                                                                                            
-            'nthread': -1,
-            'metric': 'mse',
-            'boosting_type': 'gbdt',    
-            'max_depth': 10,
-            'num_leaves': 40,   
-            'task': 'train',                                                                                                                      
-            'objective': 'regression_l1',                                                                                                         
-            'learning_rate': 0.001,                                                                                                                
-            'feature_fraction': 0.9,                                                                                                              
-            'bagging_fraction': 0.8,                                                                                                              
-            'bagging_freq': 5,                                                                                                                    
-            'lambda_l1': 0.06,                                                                                                                    
-            'lambda_l2': 0.05,                                                                                                                    
-            'verbose': -1,     }                                                                                                                           
-                                                                                                                                                
-                                                                                                                        
-    lgbtrain_all = lgb.Dataset(data=X_train, label=y_train)                                                       
-    final_model = lgb.train(lgb_params, lgbtrain_all, num_boost_round=iteration)     
-    print('total sales model trained')                                                         
-    joblib.dump(final_model, '../models/lgbm_total_sales.pkl')
-    print('total sales model saved')  
-
+# I have decided not to use optuna in markdowns prediction, as the training time for 5 models was too long.
 
 def train_markdown_models():
     df = pd.read_csv('../data/dummy_markdowns.csv')
@@ -210,8 +175,8 @@ def train_markdown_models():
 
 
 #train_ws_model()
-train_ts_model()
-#train_markdown_models()
+#train_ts_model()
+train_markdown_models()
 
 
 
