@@ -174,8 +174,8 @@ def train_markdown_models():
             print(f'{markdown} model saved')             
 
 
-#train_ws_model()
-#train_ts_model()
+train_ws_model()
+train_ts_model()
 train_markdown_models()
 
 
